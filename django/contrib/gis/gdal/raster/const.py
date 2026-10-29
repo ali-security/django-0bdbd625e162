@@ -65,6 +65,9 @@ GDAL_COLOR_TYPES = {
     16: 'GCI_YCbCr_CrBand',  # Cr Chroma, also GCI_Max
 }
 
+# GDAL virtual filesystems prefix.
+VSI_FILESYSTEM_PREFIX = '/vsi'
+
 # Fixed base path for buffer-based GDAL in-memory files.
 VSI_FILESYSTEM_BASE_PATH = '/vsimem/'
 
