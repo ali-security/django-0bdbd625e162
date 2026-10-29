@@ -58,6 +58,7 @@ TEST_DATA = [
 
     (validate_email, 'example@atm.%s' % ('a' * 64), ValidationError),
     (validate_email, 'example@%s.atm.%s' % ('b' * 64, 'a' * 63), ValidationError),
+    (validate_email, "example@%scom" % (("a" * 63 + ".") * 100), ValidationError),
     (validate_email, None, ValidationError),
     (validate_email, '', ValidationError),
     (validate_email, 'abc', ValidationError),
@@ -242,6 +243,18 @@ TEST_DATA = [
     (URLValidator(EXTENDED_SCHEMES), 'git+ssh://git@github.com/example/hg-git.git', None),
 
     (URLValidator(EXTENDED_SCHEMES), 'git://-invalid.com', ValidationError),
+    (
+        URLValidator(),
+        "http://example." + ("a" * 63 + ".") * 1000 + "com",
+        ValidationError,
+    ),
+    # 2.2.x counts userinfo toward the 253-character netloc limit, so this
+    # long-but-valid upstream case is rejected here.
+    (
+        URLValidator(),
+        "http://userid:password" + "d" * 2000 + "@example.aaaaaaaaaaaaa.com",
+        ValidationError,
+    ),
     # Newlines and tabs are not accepted.
     (URLValidator(), 'http://www.djangoproject.com/\n', ValidationError),
     (URLValidator(), 'http://[::ffff:192.9.5.5]\n', ValidationError),
